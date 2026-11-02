@@ -1,0 +1,27 @@
+zordoc.uz/api/mis/v2/patients/a564d2ee-559f-45ce-85e2-afdfb8e0625b/medical-cases?start_at=2026-09-30&end_at=2026-09-30&page=1&per_page=12 - koriklar
+zordoc.uz/api/mis/v2/patients/a564d2ee-559f-45ce-85e2-afdfb8e0625b/appointments/disease-related?page=1&per_page=12&start_at=2026-09-30&end_at=2026-09-30 - tashxislar
+
+
+@patient_check.py (1-609)  - bu kodga tegmagin shunchaki goyangni aytgin.
+
+
+bu yerga MBK-10 boyicha har bitta bemorga qoyilgan tashxis olniyapti. Tashxis API rus tiliga kelyapti
+
+1. Yuz-jag +
+2. Nevrologiya +
+3. Gastro +
+4. Gemotologiya - oxirda qilinishi kerak
+5. Travmotologiya +
+6. NeyroXirurgiya +
+7. Lor +
+8. Yiringli xirurgiya +
+9. Pulmanalogiya +
+10. Kardio +
+11. Alergalogiya +
+12. Endokrinologiya+
+13. Nefrologiya+
+14. Angiografiya +
+
+
+
+7. Uralogiya - lnk formatga yuborilgan excel ni yubrosinlar

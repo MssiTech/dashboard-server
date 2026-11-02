@@ -1,0 +1,382 @@
+[
+  {
+    "title": "SIYDIK TOSh KASALLIGI",
+    "name": [
+      "N20", "N20.1", "N20.2", "N21.0"
+    ],
+    "labaratory": [
+      "Umumiy qon tahlili",
+      "Umumiy siydik tahlili",
+      "Qondagi ALT miqdorini aniqlash",
+      "Qondagi ACT miqdorini aniqlash",
+      "Qondagi Umumiy oqsil miqdorini aniqlash",
+      "Qondagi Kreatinin miqdorini aniqlash",
+      "Qondagi umumiy bilirubin miqdorini aniqlash",
+      "Qondagi Mochevina miqdorini aniqlash",
+      "Qondagi Natriy miqdorini aniqlash",
+      "Qondagi Kaliy miqdorini aniqlash",
+      "Qondagi Magniy miqdorini aniqlash",
+      "Qondagi Glyukoza miqdorini aniqlash",
+      "Kondagi Kaltsiy mikdorini aniklash",
+      "Kondagi Uratlar",
+      "Gematokrit",
+      "Siydik bak. Yekmasi",
+      "Kon ivish vakti",
+      "Kon leykoformulasi",
+      "Kondagi albumin",
+      "Siydikdagi kaltsiy",
+      "Siydikdagi oksalatlar",
+      "Siydikdagi tsitratlar",
+      "Siydikdagi uratlar",
+      "Siydikdagi kreatinin",
+      "Siydikdagi magniy",
+      "Siydikdagi fosfatlar",
+      "Siydikdagi mochevina",
+      "RW taxlili",
+      "HBsAg taxlili",
+      "Kon guruxini aniklash",
+      "OIV taxlili",
+      "Siydikdagi tsistinni aniklash"
+    ],
+    "diganostic": [
+      "Buyraklar UTT",
+      "Siydik pufagi tashki UTT",
+      "Siydik yullari umumiy rentgenografiyasi",
+      "Yekskretor urografiya",
+      "MSKT (kontrastsiz va kontrast bilan)",
+      "Antegrad piyeloureterografiya",
+      "YEKG"
+    ]
+  },
+  {
+    "title": "PROSTOTA BEZI XAVSIZ GIPERPLAZIYASI.",
+    "name": [
+      "N40.0"
+    ],
+    "labaratory": [],
+    "diganostic": [
+      "Elektrokardiografiya",
+      "prostata bezini rektal tekshirish",
+      "Tsistostomali bemorlarda artifitsial tsistometriya",
+      "Prostata bezi biopsiyasi",
+      "Buyraklar UTT",
+      "Urofloumetriya",
+      "Uretrotsistoskopiya",
+      "Uroteleskopiya bilan yekskretor urografiya",
+      "Prostata siydik pufagi UTT koldik siydikni aniklash"
+    ]
+  },
+  {
+    "title": "Peyroni kasalligi",
+    "name": [
+      "N48.4"
+    ],
+    "labaratory": [],
+    "diganostic": [
+      "Elektrokardiografiya",
+      "Olat doplerografik UTT",
+      "Olat farmakodoplero grafiyasi"
+    ]
+  },
+  {
+    "title": "Varikotsele",
+    "name": [
+      "I86.1"
+    ],
+    "labaratory": [],
+    "diganostic": [
+      "Elektrokardiografiya",
+      "Moyaklar doplerografiyasi UTT"
+    ]
+  },
+  {
+    "title": "Autosom-dominant buyrak polikistoz kasalligi",
+    "name": [
+      "Q61.2"
+    ],
+    "labaratory": [],
+    "diganostic": [
+      "Buyraklar UTT",
+      "Siydik pufagi UTT",
+      "YEKG",
+      "MSKT (kontrastsiz va kontrast bilan)",
+      "Siydik yullari umumiy rentgenografiyasi"
+    ]
+  },
+  {
+    "title": "Buyrakning tugma yagona oddiy kistasi",
+    "name": [
+      "Q61.0", "N28.1"
+    ],
+    "labaratory": [],
+    "diganostic": [
+      "Buyraklar UTT",
+      "Siydik pufagi  UTT",
+      "YEKG",
+      "Yekskretor urografiya",
+      "Siydik yullari umumiy rentgenografiyasi",
+      "MSKT (kontrastsiz va kontrast bilan)"
+    ]
+  },
+  {
+    "title": "Tutash,pallali va takasimon buyrak",
+    "name": [
+      "Q61.3"
+    ],
+    "labaratory": [],
+    "diganostic": [
+      "Elektrokardiografiya",
+      "Siydik pufagi  UTT",
+      "Buyraklar UTT",
+      "Siydik yullari umumiy rentgenografiyasi",
+      "MSKT"
+    ]
+  },
+  {
+    "title": "Buyrak va siydik nayining boshka aniklangan kasalliklari Nefroptoz (simptomatik va asoratsiz)",
+    "name": [
+      "N28.8"
+    ],
+    "labaratory": [],
+    "diganostic": [
+      "Elektrokardiografiya",
+      "Buyraklar UTT",
+      "Siydik pufagi UTT",
+      "MSKT",
+      "Siydik  yullari umumiy rentgenografiyasi"
+    ]
+  },
+  {
+    "title": "Periferik asab tizimi kasalliklari",
+    "name": [
+      "M54.1",
+      "M54.8"
+    ],
+    "labaratory": [],
+    "diganostic": [
+      "Elektrokardiografiya",
+      "MRT yoki MSKT (bosh miya, bo'yin, ko'krak, bel-dumg'aza umurtkalari)",
+      "ENMG",
+      "UZI ichki organlar, periferik nervlar",
+      "Exo-KG",
+      "Rentgenografiya kukrak kafasi"
+    ]
+  },
+  {
+    "title": "Mushak, nerv-mushak degenerativ kasalliklar",
+    "name": [
+      "G70.2",
+      "G70.8"
+    ],
+    "labaratory": [],
+    "diganostic": [
+      "Elektrokardiografiya",
+      "MRT yoki MSKT (bosh miya, kuks oraligi azolari)",
+      "ENMG",
+      "UZI kalkonsimon bez",
+      "UZI ichki organlar",
+      "FGDS",
+      "Exo-KG",
+      "Rentgenografiya kukrak kafasi"
+    ]
+  },
+  {
+    "title": "Miyaning surunkali ishemiyasi",
+    "name": [
+      "I67.8"
+    ],
+    "labaratory": [],
+    "diganostic": [
+      "Elektrokardiografiya",
+      "MRT yoki MSKT (bosh miya)",
+      "EEG",
+      "UZDG",
+      "UZI ichki organlar",
+      "Exo-KG",
+      "Rentgenografiya kukrak kafasi"
+    ]
+  },
+  {
+    "title": "Miyaning qon tomir kasalliklari oqibatlari.",
+    "name": [
+      "I69.1",
+      "I69.3"
+    ],
+    "labaratory": [],
+    "diganostic": [
+      "Elektrokardiografiya",
+      "MRT yoki MSKT (bosh miya)",
+      "EEG",
+      "UZDG",
+      "UZI ichki organlar",
+      "Exo-KG",
+      "Rentgenografiya kukrak kafasi"
+    ]
+  },
+  {
+    "title": "Psixologik rivojlanishda aralash spetsifik buzilish",
+    "name": [
+      "F83"
+    ],
+    "labaratory": [],
+    "diganostic": [
+      "Elektrokardiografiya",
+      "MRT (bosh miya)",
+      "UZI ichki organlar",
+      "UZI kalkonsimon bez",
+      "Exo-KG",
+      "Rentgenografiya kukrak kafasi"
+    ]
+  },
+  {
+    "title": "Boshqa bo'limlarda ko'rsatilmagan ekstrapiramid va harakat buzilishlari",
+    "name": [
+      "G26",
+      "G25.0", "G25.9"
+    ],
+    "labaratory": [],
+    "diganostic": [
+      "Elektrokardiografiya",
+      "MRT yoki MSKT (bosh miya)",
+      "EEG",
+      "UZI ichki organlar",
+      "Exo-KG",
+      "Rentgenografiya kukrak kafasi"
+    ]
+  },
+  {
+    "title": "Bo'yin umurtkalararo diskini zararlanishi",
+    "name": [
+      "M50.0", "M50.1"
+    ],
+    "labaratory": [],
+    "diganostic": [
+      "Elektrokardiografiya",
+      "MRT yoki MSKT (bosh miya, bo'yin, ko'krak, bel-dumg'aza umurtkalari)",
+      "ENMG",
+      "UZI ichki organlar, periferik nervlar",
+      "Exo-KG",
+      "Rentgenografiya kukrak kafasi"
+    ]
+  },
+  {
+    "title": "Alohida nervlar, ildizlari va nerv chigallari zararlanishi",
+    "name": [
+      "G50.4",
+      "G54.0"
+    ],
+    "labaratory": [],
+    "diganostic": [
+      "Elektrokardiografiya",
+      "MRT yoki MSKT (bosh miya, bo'yin)",
+      "ENMG",
+      "UZI ichki organlar, periferik nervlar",
+      "Exo-KG",
+      "Rentgenografiya kukrak kafasi"
+    ]
+  },
+  {
+    "title": "Markaziy nerv sistemasini shikastlantiruvchi sistem atrofiyalar",
+    "name": [
+      "G10", "G14"
+    ],
+    "labaratory": [],
+    "diganostic": [
+      "Elektrokardiografiya",
+      "MRT (bosh miya)",
+      "ENMG",
+      "UZI kalkonsimon bez",
+      "Exo-KG",
+      "Rentgenografiya kukrak kafasi"
+    ]
+  },
+  {
+    "title": "Giyen-Barre sindromi (Guillain-Barre)",
+    "name": [
+      "G61.0"
+    ],
+    "labaratory": [],
+    "diganostic": [
+      "Elektrokardiografiya",
+      "MRT (bosh miya va orka miya) yoki MSKT",
+      "Orka miya suyukligi taxlili",
+      "UZI ichki organlar",
+      "Exo-KG",
+      "ENMG",
+      "EEG",
+      "FGDS",
+      "Rentgenografiya kukrak kafasi"
+    ]
+  },
+  {
+    "title": "Irsiy va idiopatik nevropatiya, polinevro-patiyalar va Boshqa periferik nerv tizimining zararlanishlari",
+    "name": [
+      "G60.0"
+    ],
+    "labaratory": [],
+    "diganostic": [
+      "Elektrokardiografiya",
+      "MRT (bosh miya va orka miya) yoki MSKT",
+      "Orka miya suyukligi taxlili",
+      "UZI ichki organlar",
+      "Exo-KG",
+      "ENMG",
+      "EEG",
+      "FGDS",
+      "Rentgenografiya kukrak kafasi"
+    ]
+  },
+  {
+    "title": "Boshqa aniqlangan polinevropatiya",
+    "name": [
+      "G60.1",
+      "G60.8",
+      "G60.9"
+    ],
+    "labaratory": [],
+    "diganostic": [
+      "Elektrokardiografiya",
+      "MRT (bosh miya va orka miya) yoki MSKT",
+      "Orka miya suyukligi taxlili",
+      "UZI ichki organlar",
+      "Exo-KG",
+      "ENMG",
+      "EEG",
+      "FGDS",
+      "Rentgenografiya kukrak kafasi"
+    ]
+  },
+  {
+    "title": "Migren",
+    "name": [
+      "G43.1",
+      "G43.3"
+    ],
+    "labaratory": [],
+    "diganostic": [
+      "Elektrokardiografiya",
+      "MRT yoki MSKT (bosh miya)",
+      "EEG",
+      "UZDG",
+      "UZI ichki organlar",
+      "Exo-KG",
+      "Rentgenografiya kukrak kafasi"
+    ]
+  },
+  {
+    "title": "Optikonevromiyelit (Devik kasalligi)",
+    "name": [
+      "G61.0"
+    ],
+    "labaratory": [],
+    "diganostic": [
+      "Elektrokardiografiya",
+      "MRT (bosh miya va orka miya)",
+      "EEG",
+      "UZI ichki organlar",
+      "UZDG",
+      "Exo-KG",
+      "Rentgenografiya kukrak kafasi"
+    ]
+  }
+]
