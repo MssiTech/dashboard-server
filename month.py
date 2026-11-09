@@ -4,6 +4,7 @@ import psycopg2
 import requests
 
 from main import (
+    BASE_URL,
     DB_CONFIG,
     HEADERS,
     analyses,
@@ -12,7 +13,6 @@ from main import (
     catalog_diagnosis,
     classification_catalog,
     classification_id,
-    diagnoses,
     diagnostic_appointments,
     diagnostic_rows,
     disease_codes,
@@ -21,15 +21,17 @@ from main import (
     examinations,
     patient_card,
     required_names,
+    same_day,
     service_titles,
+    shift_day,
     specialist_branch_id,
     with_status,
 )
 
 
 URL = "https://zordoc.uz/api/mis/v2/hospitalizations"
-START_DATE = "2026-10-01"
-END_DATE = "2026-10-31"
+START_DATE = "2026-11-01"
+END_DATE = "2026-11-30"
 PER_PAGE = 100
 
 
@@ -153,7 +155,8 @@ def patient_details(patient, dmed_id, diagnostics, laboratories, catalog):
     name = patient.get("kasal nomi") or uuid
     visits = fetch_list(appointments, uuid, start, end, name)
     codes = disease_codes(visits, dmed_id)
-    tashxis = disease_codes(fetch_list(diagnoses, uuid, start, end, name), dmed_id)
+    tashxis = disease_codes(fetch_list(month_diagnoses, uuid, start, end, name), dmed_id)
+    tashxis = with_hospital_diagnosis(tashxis, patient.get("diagnosis") or {})
     tashxis_codes = [item.get("code") or "" for item in tashxis if item.get("code")]
     korik_codes = [item.get("code") or "" for item in codes if item.get("code")]
     mkb_codes = tashxis_codes or korik_codes
@@ -186,6 +189,53 @@ def patient_details(patient, dmed_id, diagnostics, laboratories, catalog):
             diagnostika_titles,
         ),
     }
+
+
+def month_diagnoses(uuid, start, end):
+    page = 1
+    items = []
+    begin = shift_day(start, -1)
+    finish = str(end)[:10]
+
+    while True:
+        response = requests.get(
+            f"{BASE_URL}/api/mis/v2/patients/{uuid}/appointments/disease-related",
+            headers=HEADERS,
+            params={
+                "page": page,
+                "per_page": PER_PAGE,
+                "start_at": begin,
+                "end_at": finish,
+            },
+            timeout=30,
+        )
+        response.raise_for_status()
+        result = response.json()
+        data = result.get("data") or {}
+        appointments_data = data.get("appointments") if isinstance(data, dict) else []
+        archived = data.get("archived_diagnoses") if isinstance(data, dict) else []
+        items.extend(appointments_data or [])
+        for item in archived or []:
+            if not same_day(item.get("date"), begin, finish):
+                continue
+            items.append(item)
+
+        if not (result.get("meta") or {}).get("has_more_pages", False):
+            break
+        page += 1
+
+    return items
+
+
+def with_hospital_diagnosis(rows, diagnosis):
+    code = (diagnosis.get("code") or "").strip()
+    title = (diagnosis.get("title") or "").strip()
+    if not (code or title):
+        return rows
+    seen = {(item.get("code") or "", item.get("title") or "") for item in rows}
+    if (code, title) in seen:
+        return rows
+    return rows + [{"code": code, "title": title}]
 
 
 def fetch_list(loader, uuid, start, end, name):

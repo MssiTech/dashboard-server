@@ -1,6 +1,6 @@
 import json
 import re
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import psycopg2
 import requests
@@ -25,7 +25,7 @@ DB_CONFIG = {
     "password": "1",
 }
 
-STAT_DATE = "2026-10-30"
+STAT_DATE = "2026-11-04"
 DATE = STAT_DATE
 PER_PAGE = 100
 CLINIC_ID = "3470"
@@ -370,10 +370,19 @@ def appointments(patient_uuid, day, end=None):
     return items
 
 
+def shift_day(value, days):
+    text = str(value or "")[:10]
+    try:
+        found = datetime.strptime(text, "%Y-%m-%d")
+    except ValueError:
+        return text
+    return (found + timedelta(days=days)).strftime("%Y-%m-%d")
+
+
 def diagnoses(patient_uuid, day, end=None):
     page = 1
     items = []
-    start = str(day)[:10]
+    start = shift_day(day, -1)
     finish = str(end or day)[:10]
 
     while True:
@@ -392,7 +401,12 @@ def diagnoses(patient_uuid, day, end=None):
         result = response.json()
         data = result.get("data") or {}
         appointments = data.get("appointments") if isinstance(data, dict) else []
+        archived = data.get("archived_diagnoses") if isinstance(data, dict) else []
         items.extend(appointments or [])
+        for item in archived or []:
+            if not same_day(item.get("date"), start, finish):
+                continue
+            items.append(item)
 
         if not (result.get("meta") or {}).get("has_more_pages", False):
             break
@@ -982,6 +996,17 @@ def save_checks(results):
     return saved
 
 
+def disease_rows(item):
+    diseases = item.get("disease_codes")
+    if diseases:
+        return diseases
+    code = (item.get("code") or "").strip()
+    title = (item.get("title") or "").strip()
+    if code or title:
+        return [{"code": code, "title": title}]
+    return []
+
+
 def disease_codes(items, dmed_id):
     found = []
     seen = set()
@@ -994,7 +1019,7 @@ def disease_codes(items, dmed_id):
         if str(clinic.get("id") or "") != str(CLINIC_ID):
             continue
 
-        for disease in item.get("disease_codes") or []:
+        for disease in disease_rows(item):
             code = (disease.get("code") or "").strip()
             title = (disease.get("title") or "").strip()
             key = (code, title)

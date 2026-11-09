@@ -80,12 +80,21 @@ def plan_percent(count, limit):
     return round((count / limit_value) * 100, 1)
 
 
+def plan_text(value):
+    return str(value).strip() if value not in (None, "") else ""
+
+
 def doctor_plan_fields(doctor, plans):
     plan = plans.get(doctor.id)
-    bid = (plan.bid if plan else doctor.bid) or ""
-    daily_limit = (plan.daily_limit if plan else doctor.daily_limit) or ""
-    monthly_limit = (plan.monthly_limit if plan else doctor.monthly_limit) or ""
-    return bid, daily_limit, monthly_limit
+
+    def pick(name):
+        if plan:
+            value = plan_text(getattr(plan, name, None))
+            if value:
+                return value
+        return plan_text(getattr(doctor, name, None))
+
+    return pick("bid"), pick("daily_limit"), pick("monthly_limit")
 
 
 def annotated_doctors(start, end, day):

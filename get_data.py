@@ -5,8 +5,8 @@ from xml.etree import ElementTree as ET
 from zipfile import ZipFile
 
 
-EXCEL_FILE = Path(__file__).resolve().parent / "gemotologiya2.xlsx"
-JSON_FILE = Path(__file__).resolve().parent / "gemotologiya2.json"
+EXCEL_FILE = Path(__file__).resolve().parent / "Revmatologiya.xlsx"
+JSON_FILE = Path(__file__).resolve().parent / "Revmatologiya.json"
 NS = {"m": "http://schemas.openxmlformats.org/spreadsheetml/2006/main"}
 
 

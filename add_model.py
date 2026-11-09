@@ -11,7 +11,7 @@ django.setup()
 from monitor.models import Classification, DiagnsticExamination, LaboratoryExamination
 
 
-JSON_FILE = Path(__file__).resolve().parent / "endikirinoloiya.json"
+JSON_FILE = Path(__file__).resolve().parent / "Revmatologiya.json"
 
 with JSON_FILE.open(encoding="utf-8") as f:
     diseases = json.load(f)
