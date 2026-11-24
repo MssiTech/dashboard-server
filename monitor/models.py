@@ -1,5 +1,7 @@
 from datetime import date
 
+from requests import status_codes
+
 from django.db import models
 
 class Prices(models.Model):
@@ -200,6 +202,18 @@ class CurrentViewLaboratory(models.Model):
         verbose_name_plural = "Исследования пациента"
 
 
+class ActivePatients(models.Model):
+    patient = models.CharField(max_length=255, null=True, blank=True, verbose_name="Пациент")
+    uuid = models.CharField(max_length=255, null=True, blank=True, verbose_name="UUID пациента")
+    doctor = models.ForeignKey(Doctors, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Врач")
+    date = models.DateField(null=True, blank=True, verbose_name="Дата")
+
+    class Meta:
+        db_table = "active_patients"
+        verbose_name = "Активные пациенты"
+        verbose_name_plural = "Активные пациенты"
+
+
 class Monitoring(models.Model):
     doctor = models.ForeignKey(Doctors, on_delete=models.CASCADE, null=True, blank=True, related_name="monitoring", verbose_name="Врач")
     branch = models.ForeignKey(Branches, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Филиал")
@@ -219,3 +233,17 @@ class Monitoring(models.Model):
         db_table = "monitoring"
         verbose_name = "06. Мониторинг"
         verbose_name_plural = "06. Мониторинг"
+
+
+class RetsepMonitoring(models.Model):
+    doctor = models.ForeignKey(Doctors, on_delete=models.CASCADE, null=True, blank=True, related_name="retsep_monitoring", verbose_name="Врач")
+    patient_uuid = models.CharField(max_length=255, null=True, blank=True, verbose_name="UUID пациента")
+    branch = models.ForeignKey(Branches, on_delete=models.CASCADE, null=True, blank=True, verbose_name="Филиал")
+    retsep_name = models.CharField(max_length=255, null=True, blank=True, verbose_name="Название рецепта")
+    status = models.CharField(max_length=255, null=True, blank=True, verbose_name="Статус")
+    date = models.DateField(null=True, blank=True, verbose_name="Дата")
+
+    class Meta:
+        db_table = "retsep_monitoring"
+        verbose_name = "07. Мониторинг рецептов"
+        verbose_name_plural = "07. Мониторинг рецептов"

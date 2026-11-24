@@ -138,6 +138,19 @@ def hospitalizations(department_id):
     return found
 
 
+def exam_status(required, found_titles):
+    names = list(required)
+    if not names:
+        seen = set()
+        for title in found_titles:
+            title = (title or "").strip()
+            if not title or title in seen:
+                continue
+            seen.add(title)
+            names.append(title)
+    return with_status(names, found_titles)
+
+
 def patient_details(patient, dmed_id, diagnostics, laboratories, catalog):
     empty = {
         **empty_patient_card(),
@@ -160,15 +173,12 @@ def patient_details(patient, dmed_id, diagnostics, laboratories, catalog):
     tashxis_codes = [item.get("code") or "" for item in tashxis if item.get("code")]
     korik_codes = [item.get("code") or "" for item in codes if item.get("code")]
     mkb_codes = tashxis_codes or korik_codes
-    tahlil = []
-    diagnostika = []
-    if any(code in catalog for code in mkb_codes):
-        tahlil = service_titles(fetch_list(analyses, uuid, start, end, name), start, end)
-        diagnostika = diagnostic_rows(
-            fetch_list(diagnostic_appointments, uuid, start, end, name),
-            start,
-            end,
-        )
+    tahlil = service_titles(fetch_list(analyses, uuid, start, end, name), start, end)
+    diagnostika = diagnostic_rows(
+        fetch_list(diagnostic_appointments, uuid, start, end, name),
+        start,
+        end,
+    )
 
     diagnostika_titles = []
     for item in diagnostika:
@@ -180,11 +190,11 @@ def patient_details(patient, dmed_id, diagnostics, laboratories, catalog):
         **patient_card(uuid),
         "korik": examinations(visits, start, catalog, end),
         "tashxis": catalog_diagnosis(tashxis, catalog),
-        "tahlil": with_status(
+        "tahlil": exam_status(
             required_names(mkb_codes, laboratories),
             [item.get("title") or "" for item in tahlil],
         ),
-        "diagnostika": with_status(
+        "diagnostika": exam_status(
             required_names(mkb_codes, diagnostics),
             diagnostika_titles,
         ),

@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'authen',
     'inventory',
     'import_export',
+    'appeals',
 ]
 
 MIDDLEWARE = [
@@ -131,6 +132,8 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+TELEGRAM_BOT_TOKEN = "9053017694:AAEUEgwrW2Wg4j5_s7MRHYwfhbvFkHkvqp4"
 
 SWAGGER_SETTINGS = {
     "SECURITY_DEFINITIONS": {

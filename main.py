@@ -25,7 +25,7 @@ DB_CONFIG = {
     "password": "1",
 }
 
-STAT_DATE = "2026-11-04"
+STAT_DATE = "2026-11-11"
 DATE = STAT_DATE
 PER_PAGE = 100
 CLINIC_ID = "3470"
@@ -207,6 +207,100 @@ def save_polyclinic_patients():
             "sana": STAT_DATE,
             "qabullar": len(patients),
             "kasal_dmed_id": patients,
+        })
+
+    conn.commit()
+    cursor.close()
+    conn.close()
+    return results
+
+
+def get_active_patients(dmed_id, day=None):
+    day = str(day or STAT_DATE)[:10]
+    page = 1
+    patients = []
+    seen = set()
+
+    while True:
+        response = requests.get(
+            URL,
+            headers=HEADERS,
+            params={
+                "excluded_statuses[0]": "canceled",
+                "excluded_statuses[1]": "provided",
+                "doctors[0]": dmed_id,
+                "start_at": day,
+                "end_at": day,
+                "page": page,
+                "per_page": PER_PAGE,
+            },
+            timeout=30,
+        )
+        if response.status_code == 404:
+            return patients
+        if response.status_code != 200:
+            raise RuntimeError(f"status {response.status_code}: {response.text[:300]}")
+
+        result = response.json()
+        for appointment in result.get("data") or []:
+            doctor = appointment.get("doctor") or {}
+            if str(doctor.get("id") or "") != str(dmed_id):
+                continue
+            patient = appointment.get("patient") or {}
+            uuid = patient.get("uuid") or ""
+            name = patient_name(patient)
+            key = (uuid, name)
+            if key in seen or not (uuid or name):
+                continue
+            seen.add(key)
+            patients.append({
+                "kasal nomi": name,
+                "uuid": uuid,
+            })
+
+        if not (result.get("meta") or {}).get("has_more_pages", False):
+            break
+        page += 1
+
+    return patients
+
+
+def save_active_patients(day=None):
+    day = str(day or STAT_DATE)[:10]
+    results = []
+    conn = psycopg2.connect(**DB_CONFIG)
+    cursor = conn.cursor()
+
+    for doctor_id, full_name, dmed_id in polyclinic_doctors():
+        cursor.execute(
+            "DELETE FROM active_patients WHERE doctor_id = %s AND date = %s",
+            (doctor_id, day),
+        )
+        try:
+            patients = get_active_patients(dmed_id, day)
+        except requests.RequestException as exc:
+            print(f"o'tkazildi: {full_name} / active {exc}", flush=True)
+            results.append({
+                "doctor": full_name,
+                "dmed_id": dmed_id,
+                "sana": day,
+                "holat": "active olinmadi",
+            })
+            continue
+
+        for patient in patients:
+            cursor.execute(
+                """
+                INSERT INTO active_patients (patient, uuid, doctor_id, date)
+                VALUES (%s, %s, %s, %s)
+                """,
+                (patient["kasal nomi"], patient["uuid"], doctor_id, day),
+            )
+        results.append({
+            "doctor": full_name,
+            "dmed_id": dmed_id,
+            "sana": day,
+            "active": len(patients),
         })
 
     conn.commit()
@@ -1138,6 +1232,10 @@ def specialist_branch_id(cursor, visit):
 
 def main():
     print(f"Sana: {STAT_DATE}")
+    active = save_active_patients()
+    print(json.dumps(active, ensure_ascii=False, indent=4))
+    print(f"Active qabullar: {sum(item.get('active') or 0 for item in active)}")
+
     receptions = save_polyclinic_patients()
     print(json.dumps(receptions, ensure_ascii=False, indent=4))
     print(f"Qabullar saqlandi: {sum(1 for item in receptions if 'qabullar' in item)} ta shifokor")

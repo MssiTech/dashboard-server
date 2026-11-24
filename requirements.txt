@@ -25,6 +25,7 @@ postgres==4.0
 psycopg2==2.9.13
 psycopg2-binary==2.9.13
 psycopg2-pool==1.2
+python-telegram-bot==21.11.1
 PyJWT==2.15.1
 pytz==2026.4
 PyYAML==6.0.3

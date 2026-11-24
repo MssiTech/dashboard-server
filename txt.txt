@@ -25,3 +25,8 @@ bu yerga MBK-10 boyicha har bitta bemorga qoyilgan tashxis olniyapti. Tashxis AP
 
 
 7. Uralogiya - lnk formatga yuborilgan excel ni yubrosinlar
+
+
+https://zordoc.uz/api/mis/v2/medical-cases/216067846/survey-plan - analizni olish
+
+

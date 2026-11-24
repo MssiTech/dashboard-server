@@ -34,6 +34,7 @@ urlpatterns = [
     path('api/month-monitor/', include('month_monitor.urls')),
     path('api/authen/', include('authen.urls')),
     path('api/inventory/', include('inventory.urls')),
+    path('api/appleas/', include('appeals.urls')),
 ]
 
 if settings.DEBUG:

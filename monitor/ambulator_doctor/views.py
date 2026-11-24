@@ -1,16 +1,32 @@
 import calendar
 from datetime import date
 
-from django.db.models import Count, Q
+from django.db.models import Count, Q, Sum
+from django.db.models.functions import Coalesce
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from monitor.ambulator_doctor.serializers import AmbulatorDoctorSerializer, AmbulatorDoctorTopSerializer
+from monitor.ambulator_doctor.serializers import (
+    AmbulatorDoctorSerializer,
+    AmbulatorDoctorTopSerializer,
+    AmbulatorReceptionSerializer,
+    AmbulatorReceptionSummarySerializer,
+    AmbulatorRetsepSerializer,
+)
 from monitor.district_monitor.views import parse_day
-from monitor.models import DoctorMonthPlan, Doctors, Patients
+from monitor.models import (
+    ActivePatients,
+    CurrentViewDiagnosis,
+    CurrentViewLaboratory,
+    DoctorMonthPlan,
+    Doctors,
+    PatientReception,
+    Patients,
+    RetsepMonitoring,
+)
 from monitor.pagination import PaginationList
 
 
@@ -248,3 +264,202 @@ class AmbulatorDoctorBottomAPIView(APIView):
             },
             status=status.HTTP_200_OK,
         )
+
+
+class AmbulatorReceptionListAPIView(APIView):
+    pagination_class = AmbulatorDoctorPagination
+
+    @swagger_auto_schema(
+        tags=["Monitor / Ambulator"],
+        responses={200: AmbulatorReceptionSerializer(many=True)},
+        manual_parameters=[
+            openapi.Parameter(
+                "date",
+                openapi.IN_QUERY,
+                description="Sana (YYYY-MM-DD). Bo'sh bo'lsa bugun",
+                type=openapi.TYPE_STRING,
+                format=openapi.FORMAT_DATE,
+                required=False,
+            ),
+            openapi.Parameter("full_name", openapi.IN_QUERY, description="Shifokor F.I.Sh.", type=openapi.TYPE_STRING, required=False),
+            openapi.Parameter("page", openapi.IN_QUERY, description="Sahifa", type=openapi.TYPE_INTEGER, required=False),
+            openapi.Parameter("limit", openapi.IN_QUERY, description="Sahifadagi soni", type=openapi.TYPE_INTEGER, required=False),
+        ],
+    )
+    def get(self, request):
+        raw_date = (request.query_params.get("date") or "").strip()
+        day = parse_day(raw_date) if raw_date else date.today()
+        if raw_date and day is None:
+            return Response(
+                {"date": "Sana YYYY-MM-DD formatida bo‘lishi kerak"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        full_name = (request.query_params.get("full_name") or "").strip()
+        doctors = Doctors.objects.filter(polyclinic=True).select_related("branch").annotate(
+            active=Count(
+                "activepatients",
+                filter=Q(activepatients__date=day),
+                distinct=True,
+            ),
+            completed=Count(
+                "patientreception__patients",
+                filter=Q(
+                    patientreception__patients__is_stasionary=False,
+                    patientreception__patients__reception_date=day,
+                ),
+                distinct=True,
+            ),
+        ).order_by("full_name")
+        if full_name:
+            doctors = doctors.filter(full_name__icontains=full_name)
+
+        paginator = self.pagination_class()
+        page = paginator.paginate_queryset(doctors, request, view=self)
+        rows = page if page is not None else doctors
+        data = []
+        for doctor in rows:
+            active = doctor.active
+            completed = doctor.completed
+            data.append({
+                "id": doctor.id,
+                "dmed_id": doctor.dmed_id or "",
+                "full_name": doctor.full_name or "",
+                "branch": doctor.branch.name if doctor.branch_id and doctor.branch else "",
+                "total": active + completed,
+                "active": active,
+                "completed": completed,
+            })
+        payload = AmbulatorReceptionSerializer(data, many=True).data
+        if page is None:
+            return Response({"date": day.isoformat(), "results": payload}, status=status.HTTP_200_OK)
+        response = paginator.get_paginated_response(payload)
+        response.data = {"date": day.isoformat(), **response.data}
+        return response
+
+
+class AmbulatorReceptionSummaryAPIView(APIView):
+    @swagger_auto_schema(
+        tags=["Monitor / Ambulator"],
+        responses={200: AmbulatorReceptionSummarySerializer()},
+        manual_parameters=[
+            openapi.Parameter(
+                "start_date",
+                openapi.IN_QUERY,
+                description="Boshlanish (YYYY-MM-DD). Bo'sh bo'lsa bugun",
+                type=openapi.TYPE_STRING,
+                format=openapi.FORMAT_DATE,
+                required=False,
+            ),
+            openapi.Parameter(
+                "end_date",
+                openapi.IN_QUERY,
+                description="Tugash (YYYY-MM-DD). Bo'sh bo'lsa start_date",
+                type=openapi.TYPE_STRING,
+                format=openapi.FORMAT_DATE,
+                required=False,
+            ),
+        ],
+    )
+    def get(self, request):
+        today = date.today()
+        start = parse_day(request.query_params.get("start_date"))
+        end = parse_day(request.query_params.get("end_date"))
+        if request.query_params.get("start_date") and start is None:
+            return Response({"date": "start_date YYYY-MM-DD formatida bo‘lishi kerak"}, status=status.HTTP_400_BAD_REQUEST)
+        if request.query_params.get("end_date") and end is None:
+            return Response({"date": "end_date YYYY-MM-DD formatida bo‘lishi kerak"}, status=status.HTTP_400_BAD_REQUEST)
+        if start is None and end is None:
+            start = end = today
+        elif start is None:
+            start = end
+        elif end is None:
+            end = start
+        if start > end:
+            return Response({"date": "start_date end_date dan katta bo‘lmasligi kerak"}, status=status.HTTP_400_BAD_REQUEST)
+
+        doctors = Doctors.objects.filter(polyclinic=True)
+        bajarildi = PatientReception.objects.filter(
+            doctor__in=doctors,
+            reception_date__range=(start, end),
+        ).aggregate(total=Coalesce(Sum("reception_count"), 0))["total"]
+        active = ActivePatients.objects.filter(
+            doctor__in=doctors,
+            date__range=(start, end),
+        ).count()
+        diagnostika = CurrentViewDiagnosis.objects.filter(
+            is_exists=True,
+            patient_current_view__doctor__in=doctors,
+            patient_current_view__date__range=(start, end),
+        ).count()
+        tahlil = CurrentViewLaboratory.objects.filter(
+            is_exists=True,
+            patient_current_view__doctor__in=doctors,
+            patient_current_view__date__range=(start, end),
+        ).count()
+        return Response(
+            {
+                "start_date": start.isoformat(),
+                "end_date": end.isoformat(),
+                "umumiy_qabullar": active + bajarildi,
+                "active": active,
+                "bajarildi": bajarildi,
+                "diagnostika": diagnostika,
+                "tahlil": tahlil,
+            },
+            status=status.HTTP_200_OK,
+        )
+
+
+class AmbulatorRetsepListAPIView(APIView):
+    @swagger_auto_schema(
+        tags=["Monitor / Ambulator"],
+        responses={200: AmbulatorRetsepSerializer()},
+        manual_parameters=[
+            openapi.Parameter(
+                "start_date",
+                openapi.IN_QUERY,
+                description="Boshlanish (YYYY-MM-DD). Bo'sh bo'lsa bugun",
+                type=openapi.TYPE_STRING,
+                format=openapi.FORMAT_DATE,
+                required=False,
+            ),
+            openapi.Parameter(
+                "end_date",
+                openapi.IN_QUERY,
+                description="Tugash (YYYY-MM-DD). Bo'sh bo'lsa start_date",
+                type=openapi.TYPE_STRING,
+                format=openapi.FORMAT_DATE,
+                required=False,
+            ),
+        ],
+    )
+    def get(self, request):
+        today = date.today()
+        start = parse_day(request.query_params.get("start_date"))
+        end = parse_day(request.query_params.get("end_date"))
+        if request.query_params.get("start_date") and start is None:
+            return Response({"date": "start_date YYYY-MM-DD formatida bo‘lishi kerak"}, status=status.HTTP_400_BAD_REQUEST)
+        if request.query_params.get("end_date") and end is None:
+            return Response({"date": "end_date YYYY-MM-DD formatida bo‘lishi kerak"}, status=status.HTTP_400_BAD_REQUEST)
+        if start is None and end is None:
+            start = end = today
+        elif start is None:
+            start = end
+        elif end is None:
+            end = start
+        if start > end:
+            return Response({"date": "start_date end_date dan katta bo‘lmasligi kerak"}, status=status.HTTP_400_BAD_REQUEST)
+
+        count = RetsepMonitoring.objects.filter(
+            doctor__polyclinic=True,
+            date__range=(start, end),
+        ).count()
+        return Response(
+            {
+                "start_date": start.isoformat(),
+                "end_date": end.isoformat(),
+                "count": count,
+            },
+            status=status.HTTP_200_OK,
+        )
+

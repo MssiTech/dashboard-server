@@ -16,7 +16,9 @@ from monitor.models import (
     PatientCurrentView,
     PattientCurrentDiagnosis,
     CurrentViewDiagnosis,
-    CurrentViewLaboratory
+    ActivePatients,
+    CurrentViewLaboratory,
+    RetsepMonitoring
 )
 
 
@@ -192,3 +194,17 @@ class PattientCurrentDiagnosisAdmin(admin.ModelAdmin):
 # class CurrentViewDiagnosisAdmin(admin.ModelAdmin):
 #     list_display = ['patient_current_view', 'diagnosis', 'is_exists']
 
+
+
+@admin.register(ActivePatients)
+class ActivePatientsAdmin(admin.ModelAdmin):
+    list_display = ['patient', 'uuid', 'doctor', 'date']
+    search_fields = ['patient']
+    list_filter = ['date']
+
+
+@admin.register(RetsepMonitoring)
+class RetsepMonitoringAdmin(admin.ModelAdmin):
+    list_display = ['doctor', 'branch', 'retsep_name', 'status', 'date']
+    search_fields = ['doctor', 'branch', 'retsep_name',' date']
+    list_filter = ['date']

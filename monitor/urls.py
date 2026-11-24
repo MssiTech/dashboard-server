@@ -10,6 +10,9 @@ from monitor.ambulator_doctor.views import (
     AmbulatorDoctorBottomAPIView,
     AmbulatorDoctorListAPIView,
     AmbulatorDoctorTopAPIView,
+    AmbulatorReceptionListAPIView,
+    AmbulatorReceptionSummaryAPIView,
+    AmbulatorRetsepListAPIView,
 )
 from monitor.branch_monitor.views import BranchReceptionListAPIView
 from monitor.district_monitor.views import (
@@ -46,6 +49,9 @@ urlpatterns = [
     path('month/<int:doctor_id>/', MonthMonitoringDetailAPIView.as_view(), name='month-monitoring-detail'),
 
     path('ambulator-doctors/', AmbulatorDoctorListAPIView.as_view(), name='ambulator-doctors'),
+    path('ambulator-doctors/receptions/', AmbulatorReceptionListAPIView.as_view(), name='ambulator-receptions'),
+    path('ambulator-doctors/receptions/summary/', AmbulatorReceptionSummaryAPIView.as_view(), name='ambulator-receptions-summary'),
+    path('ambulator-doctors/retseps/', AmbulatorRetsepListAPIView.as_view(), name='ambulator-retseps'),
     path('ambulator-doctors/top/', AmbulatorDoctorTopAPIView.as_view(), name='ambulator-doctors-top'),
     path('ambulator-doctors/bottom/', AmbulatorDoctorBottomAPIView.as_view(), name='ambulator-doctors-bottom'),
     path('employees/', EmployeeListAPIView.as_view(), name='employee-list'),

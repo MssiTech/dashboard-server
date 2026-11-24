@@ -17,14 +17,24 @@ class DeviceType(models.Model):
         return self.name
 
 
+class DeviceStatus(models.TextChoices):
+        NEW = "new", "Yangi"
+        NOT_AVAILABLE = "available", "O'rta holatda"
+        REPAIR_REQUIRED = "repair_required", "Remont talab etiladi"
+        OUTDATED = "outdated", "Eski"
+        OTHER = "other", "Boshqa"
+
+
 class Inventory(models.Model):
     name = models.CharField(max_length=255, verbose_name="Название")
     device_type = models.ForeignKey(DeviceType, on_delete=models.CASCADE, verbose_name="Тип устройства")
     branch = models.ForeignKey(Branches, on_delete=models.CASCADE, verbose_name="Филиал")
-    person = models.ForeignKey(Doctors, on_delete=models.CASCADE, verbose_name="Врач")
+    person = models.CharField(max_length=255, null=True, blank=True, verbose_name="Врач")
     serial_number = models.CharField(max_length=255, verbose_name="Серийный номер")
-    description = models.TextField(verbose_name="Описание")
+    description = models.TextField(null=True, blank=True, verbose_name="Описание")
     year_manufacture = models.DateField(verbose_name="Год производства")
+    image = models.ImageField(upload_to="inventory/", null=True, blank=True, verbose_name="Изображение")
+    device_status = models.CharField(max_length=255, choices=DeviceStatus.choices, null=True, blank=True, verbose_name="Статус устройства")
     room = models.CharField(max_length=255, null=True, blank=True, verbose_name="Комната")
 
     def __str__(self):

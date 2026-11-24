@@ -50,7 +50,7 @@ class DoctorsListAPIView(GenericAPIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 class MonitoringListAPIView(APIView):
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
     pagination_class = PaginationList
     
     @swagger_auto_schema(
@@ -75,7 +75,7 @@ class MonitoringListAPIView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        monitoring = Monitoring.objects.filter(date=selected_date)
+        monitoring = Monitoring.objects.filter(date=selected_date, doctor__polyclinic=True)
         if full_name:
             monitoring = monitoring.filter(doctor__full_name__icontains=full_name)
         monitoring = monitoring.order_by('-id')
